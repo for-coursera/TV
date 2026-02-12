@@ -40,11 +40,10 @@ jobs:
           mv diff.tmp diff
           git commit -F diff
           git push origin HEAD:master
-          echo "proceed=true" >> $GITHUB_OUTPUT
 
       - name: Tag
         id: tag
-        if: steps.push.outputs.proceed == 'true'
+        if: steps.push.outputs.proceed != 'false'
         run: |
           TAG=list_$(date +%s)
           echo "$TAG"
@@ -53,7 +52,7 @@ jobs:
           git push origin $TAG
 
       - name: Release
-        if: steps.push.outputs.proceed == 'true'
+        if: steps.push.outputs.proceed != 'false'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.tag.outputs.tag }}
@@ -66,7 +65,7 @@ jobs:
       - name: Clean
         uses: jay2610/delete-older-releases@1.0.0
         with:
-          keep_latest: 3
+          keep_latest: 4
           delete_tag_pattern: list
           delete_type: 'release'
           target_branch: 'master'
