@@ -37,6 +37,12 @@ jobs:
 #           git commit -m "Autoupdate $(date +%s)"
 #           git push --force origin HEAD:master
 
+      - name: Tag
+        run: |
+          TAG=epgs_$(date +%s)
+          git tag $TAG
+          git push origin $TAG
+
       - name: Release
         uses: softprops/action-gh-release@v1
         with:

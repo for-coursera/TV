@@ -38,9 +38,16 @@ jobs:
           git commit -F diff
           git push origin HEAD:master
 
+      - name: Tag
+        run: |
+          TAG=list_$(date +%s)
+          git tag $TAG
+          git push origin $TAG
+
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ steps.tag.outputs.tag }}
           files: |
             list
             diff
