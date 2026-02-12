@@ -40,6 +40,8 @@ jobs:
       - name: Tag
         id: tag
         run: |
+          ls -la
+          git diff
           if git diff --quiet --exit-code
           then
               TAG=epgs_$(date +%s)
