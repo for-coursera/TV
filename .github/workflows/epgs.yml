@@ -38,7 +38,7 @@ jobs:
 
       - name: Release
         uses: softprops/action-gh-release@v1
-        exists: steps.tag.outputs.tag
+        if: steps.tag.outputs.tag != ''
         with:
           tag_name: ${{ steps.tag.outputs.tag }}
           files: ./*.xml.gz
