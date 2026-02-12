@@ -45,7 +45,7 @@ jobs:
         id: tag
         if: steps.push.outputs.proceed != 'false'
         run: |
-          TAG=list_$(date +%s)
+          TAG=list-$(date +%s)
           echo "$TAG"
           echo "tag=$TAG" >> $GITHUB_OUTPUT
           git tag $TAG
