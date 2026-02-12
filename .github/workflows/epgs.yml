@@ -1,0 +1,38 @@
+name: EPGs
+
+permissions:
+  contents: write
+
+on:
+  schedule:
+    - cron: '4 */4 * * *'
+  workflow_dispatch: {}
+  push:
+    tags:
+      - "epgs-*"
+
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Update
+        run: bash epgs.sh
+        env:
+          GITHUB_REPOSITORY: ${{ github.repository }}
+
+      - name: Commit and push
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet --exit-code
+          then
+              echo "No changes to commit."
+              exit 0
+          fi
+          git add EPG_LITE.xml.gz
+          git commit -m "Autoupdate $(date +%s)"
+          git push --force origin HEAD:master

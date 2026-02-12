@@ -1,0 +1,38 @@
+name: LIST
+
+permissions:
+  contents: write
+
+on:
+  push:
+    tags:
+      - "list-*"
+  schedule:
+    - cron: '1 1 1 * *'
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Update
+        run: bash list.sh
+        env:
+          GITHUB_REPOSITORY: ${{ github.repository }}
+
+      - name: Commit and push
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet --exit-code
+          then
+              echo "No changes to commit."
+              exit 0
+          fi
+          git add list
+          printf "Autoupdate\n\n" | cat - diff > diff.tmp
+          mv diff.tmp diff
+          git commit -F diff
+          git push origin HEAD:master
