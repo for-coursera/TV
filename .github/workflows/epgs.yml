@@ -51,6 +51,7 @@ jobs:
           fi
 
       - name: Release
+        uses: softprops/action-gh-release@v1
         if: steps.tag.outputs.proceed == 'true'
         with:
           tag_name: ${{ steps.tag.outputs.tag }}
