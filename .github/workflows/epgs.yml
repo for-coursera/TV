@@ -5,7 +5,7 @@ permissions:
 
 on:
   schedule:
-    - cron: '4 */4 * * *'
+    - cron: '2 */4 * * *'
   workflow_dispatch: {}
   push:
     tags:
@@ -24,15 +24,22 @@ jobs:
         env:
           GITHUB_REPOSITORY: ${{ github.repository }}
 
-      - name: Commit and push
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          if git diff --quiet --exit-code
-          then
-              echo "No changes to commit."
-              exit 0
-          fi
-          git add EPG_LITE.xml.gz
-          git commit -m "Autoupdate $(date +%s)"
-          git push --force origin HEAD:master
+#       - name: Commit and push
+#         run: |
+#           git config --global user.name "github-actions[bot]"
+#           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+#           if git diff --quiet --exit-code
+#           then
+#               echo "No changes to commit."
+#               exit 0
+#           fi
+#           git add EPG_LITE.xml.gz
+#           git commit -m "Autoupdate $(date +%s)"
+#           git push --force origin HEAD:master
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: *.xml.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

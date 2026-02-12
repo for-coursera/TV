@@ -7,8 +7,9 @@ on:
   push:
     tags:
       - "list-*"
+  workflow_dispatch: {}
   schedule:
-    - cron: '1 1 1 * *'
+    - cron: '1 1 * * 1'
 
 jobs:
   update:
@@ -36,3 +37,12 @@ jobs:
           mv diff.tmp diff
           git commit -F diff
           git push origin HEAD:master
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            list
+            diff
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
