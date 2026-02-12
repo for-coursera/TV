@@ -23,7 +23,8 @@ jobs:
         env:
           GITHUB_REPOSITORY: ${{ github.repository }}
 
-      - name: Commit and push
+      - name: Push
+        id: push
         run: |
           ls -la
           git config --global user.name "github-actions[bot]"
@@ -31,6 +32,7 @@ jobs:
           if git diff --quiet --exit-code
           then
               echo "No changes to commit."
+              echo "proceed=false" >> $GITHUB_OUTPUT
               exit 0
           fi
           git add list
@@ -38,9 +40,11 @@ jobs:
           mv diff.tmp diff
           git commit -F diff
           git push origin HEAD:master
+          echo "proceed=true" >> $GITHUB_OUTPUT
 
       - name: Tag
         id: tag
+        if: steps.push.outputs.proceed == 'true'
         run: |
           TAG=list_$(date +%s)
           echo "$TAG"
@@ -49,6 +53,7 @@ jobs:
           git push origin $TAG
 
       - name: Release
+        if: steps.push.outputs.proceed == 'true'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.tag.outputs.tag }}
