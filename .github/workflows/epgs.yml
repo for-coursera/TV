@@ -42,7 +42,7 @@ jobs:
         run: |
           if git diff --quiet --exit-code
           then
-              TAG=list_$(date +%s)
+              TAG=epgs_$(date +%s)
               echo "$TAG"
               echo "tag=$TAG" >> $GITHUB_OUTPUT
               git tag $TAG
