@@ -52,7 +52,6 @@ jobs:
 
       - name: Release
         if: steps.tag.outputs.proceed == 'true'
-        if: github.ref_type == 'tag'
         with:
           tag_name: ${{ steps.tag.outputs.tag }}
           files: ./*.xml.gz
