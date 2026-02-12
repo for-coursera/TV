@@ -38,14 +38,18 @@ jobs:
 #           git push --force origin HEAD:master
 
       - name: Tag
+        id: tag
         run: |
-          TAG=epgs_$(date +%s)
+          TAG=list_$(date +%s)
+          echo "$TAG"
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
           git tag $TAG
           git push origin $TAG
 
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
+          tag_name: ${{ steps.tag.outputs.tag }}
           files: ./*.xml.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
