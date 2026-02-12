@@ -40,8 +40,6 @@ jobs:
       - name: Tag
         id: tag
         run: |
-          ls -la
-          git diff
           if git diff --quiet --exit-code
           then
               TAG=epgs_$(date +%s)
@@ -49,10 +47,11 @@ jobs:
               echo "tag=$TAG" >> $GITHUB_OUTPUT
               git tag $TAG
               git push origin $TAG
+              echo "proceed=true" >> $GITHUB_OUTPUT
           fi
 
       - name: Release
-        uses: softprops/action-gh-release@v1
+        if: steps.tag.outputs.proceed == 'true'
         if: github.ref_type == 'tag'
         with:
           tag_name: ${{ steps.tag.outputs.tag }}
