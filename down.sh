@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+DIR=$(dirname $(readlink -f "${BASH_SOURCE[0]}"))
+cd $DIR
+
 REP=$(git config --get remote.origin.url | sed 's/.*\/\([^ ]*\/[^.]*\).*/\1/')
 
 TAG=$(curl -sH "Accept: application/vnd.github.v3+json" \
